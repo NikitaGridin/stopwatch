@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .wrapper {
+        width: 30%;
+        height: 80vh;
+        margin: 0 auto;
+        margin-top: 40px;
+        padding: 0px;
+        border-radius: 20px;
+        background-color: rgb(128, 128, 128);
+      }
+      .timer {
+        display: grid;
+        width: 45%;
+        grid-template-columns: 1fr 1fr 1fr;
+        margin: 0 auto;
+        font-size: 36px;
+        color: white;
+        font-weight: 600;
+      }
+      .hrs,
+      .min,
+      .sec,
+      .start,
+      .stop,
+      .lap,
+      .reset {
+        text-align: center;
+      }
+      .btn {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-gap: 20px;
+      }
+      .start,
+      .stop,
+      .lap,
+      .reset {
+        background-color: blue;
+        color: white;
+        font-size: 18px;
+        margin-top: 60px;
+        padding: 8px 0px;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+      .title {
+        text-align: center;
+        color: white;
+        background-color: black;
+        padding: 6px 0px;
+        margin-bottom: 20px;
+      }
+      ul {
+        padding: 0px;
+        margin: 24px 0px 0px 30px;
+        list-style-type: none;
+        font-size: 24px;
+        color: white;
+        overflow: auto;
+        height: 200px;
+      }
+      ul > li {
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="title">Секундомер</div>
+      <div class="timer">
+        <div class="hrs">00:</div>
+        <div class="min">00:</div>
+        <div class="sec">00</div>
+      </div>
+      <div class="btn">
+        <div class="start">Старт</div>
+        <div class="stop">Стоп</div>
+        <div class="lap">Круг</div>
+        <div class="reset" onclick="location.reload()">Стереть</div>
+      </div>
+      <ul class="lapBlock"></ul>
+    </div>
+    <script>
+      const lapBlock = document.querySelector(".lapBlock");
+      const lapS = document.querySelector(".lap");
+      const startS = document.querySelector(".start");
+      const stopS = document.querySelector(".stop");
+      const hrs = document.querySelector(".hrs");
+      const min = document.querySelector(".min");
+      const sec = document.querySelector(".sec");
+
+      let h = 0;
+      let m = 0;
+      let s = 0;
+
+      function start() {
+        s++;
+        if (s >= 60) {
+          s = 0;
+          m++;
+          if (m >= 60) {
+            m = 0;
+            h++;
+          }
+        }
+      }
+      function add() {
+        start();
+        hrs.textContent = h > 9 ? h : "0" + h + ":";
+        min.textContent = m > 9 ? m : "0" + m + ":";
+        sec.textContent = s > 9 ? s : "0" + s;
+        timer();
+      }
+
+      startS.addEventListener(
+        "click",
+        () => {
+          add();
+        }
+        // { once: true }
+      );
+      stopS.addEventListener(
+        "click",
+        () => {
+          timerStop();
+        }
+        // { once: true }
+      );
+      lapS.addEventListener("click", () => {
+        lap();
+      });
+      function timer() {
+        t = setTimeout(add, 1000);
+      }
+      function timerStop() {
+        clearTimeout(t);
+      }
+
+      function lap() {
+        const li = document.createElement("li");
+        lapBlock.appendChild(li);
+        li.textContent = `${h}:${m}:${s}`;
+      }
+    </script>
+  </body>
+</html>
