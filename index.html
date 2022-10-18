@@ -32,10 +32,10 @@
       .timer {
         margin: 72px auto;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         font-size: 96px;
         text-align: center;
-        width: 50%;
+        width: 70%;
         color: white;
         font-weight: bold;
       }
@@ -57,6 +57,11 @@
         color: white;
         border-radius: 10px;
         cursor: pointer;
+      }
+      .disabled {
+        pointer-events: none;
+        cursor: default;
+        background-color: #e99f82;
       }
       .start:hover,
       .stop:hover,
@@ -98,7 +103,7 @@
           margin-top: 20px;
         }
         .timer {
-          font-size: 62px;
+          font-size: 42px;
           width: 70%;
         }
         .btn {
@@ -111,18 +116,20 @@
     <div class="wrapper">
       <div class="title">Секундомер</div>
       <div class="timer">
+        <div class="hours">00:</div>
         <div class="minutes">00:</div>
         <div class="seconds">00,</div>
         <div class="miliseconds">00</div>
+        <span>Hours</span>
         <span>Min</span>
         <span>Sec</span>
         <span>Msec</span>
       </div>
       <div class="btn">
         <div class="start">Старт</div>
-        <div class="stop">Стоп</div>
-        <div class="lap">Круг</div>
-        <div class="reset" onclick="location.reload()">Стереть</div>
+        <div class="stop disabled">Стоп</div>
+        <div class="lap disabled">Круг</div>
+        <div class="reset disabled" onclick="location.reload()">Стереть</div>
       </div>
       <ul class="lapBlock"></ul>
     </div>
@@ -133,8 +140,11 @@
       const stopS = document.querySelector(".stop");
       const seconds = document.querySelector(".seconds");
       const minutes = document.querySelector(".minutes");
+      const hours = document.querySelector(".hours");
       const miliseconds = document.querySelector(".miliseconds");
+      const reset = document.querySelector(".reset");
 
+      let h = 0;
       let m = 0;
       let s = 0;
       let ms = 0;
@@ -147,28 +157,36 @@
           if (s >= 60) {
             s = 0;
             m++;
+            if (m >= 60) {
+              m = 0;
+              h++;
+            }
           }
         }
       }
       function add() {
         start();
+        hours.textContent = h > 9 ? h + ":" : "0" + h + ":";
         minutes.textContent = m > 9 ? m + ":" : "0" + m + ":";
         seconds.textContent = s > 9 ? s + "," : "0" + s + ",";
         miliseconds.textContent = ms > 9 ? ms : "0" + ms;
         timer();
       }
 
-      startS.addEventListener(
-        "click",
-        () => {
-          add();
-        },
-        { once: true }
-      );
+      startS.addEventListener("click", () => {
+        add();
+        startS.classList.add("disabled");
+        stopS.classList.remove("disabled");
+        lapS.classList.remove("disabled");
+        reset.classList.remove("disabled");
+      });
       stopS.addEventListener(
         "click",
         () => {
           timerStop();
+          stopS.classList.add("disabled");
+
+          startS.classList.remove("disabled");
         }
         // { once: true }
       );
@@ -187,7 +205,7 @@
           const li = document.createElement("li");
           lapBlock.appendChild(li);
           count++;
-          li.textContent = `Круг ${count}:   ${m}:${s},${ms}`;
+          li.textContent = `Круг ${count}:   ${h}:${m}:${s},${ms}`;
         }
       }
     </script>
