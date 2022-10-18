@@ -9,78 +9,114 @@
       * {
         font-family: Arial, Helvetica, sans-serif;
       }
+      body {
+        background-color: #75a5b8;
+      }
       .wrapper {
-        width: 30%;
-        height: 80vh;
+        width: 40%;
+        height: 700px;
         margin: 0 auto;
-        margin-top: 40px;
-        padding: 0px;
-        border-radius: 20px;
-        background-color: rgb(128, 128, 128);
+        margin-top: 178px;
+        border-radius: 10px;
+        background-color: #abccdd;
+      }
+      .title {
+        background-color: #eece1b;
+        font-size: 36px;
+        text-align: center;
+        padding: 18px 0px;
+        font-weight: bold;
+        color: white;
+        border-radius: 10px;
       }
       .timer {
+        margin: 72px auto;
         display: grid;
-        width: 45%;
-        grid-template-columns: 1fr 1fr 1fr;
-        margin: 0 auto;
-        font-size: 36px;
-        color: white;
-        font-weight: 600;
-      }
-      .hrs,
-      .min,
-      .sec,
-      .start,
-      .stop,
-      .lap,
-      .reset {
+        grid-template-columns: repeat(3, 1fr);
+        font-size: 96px;
         text-align: center;
+        width: 50%;
+        color: white;
+        font-weight: bold;
       }
       .btn {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        grid-gap: 20px;
+        grid-template-columns: repeat(4, 1fr);
+        text-align: center;
+        gap: 38px;
+        width: 80%;
+        margin: 0 auto;
       }
       .start,
       .stop,
       .lap,
       .reset {
-        background-color: blue;
-        color: white;
-        font-size: 18px;
-        margin-top: 60px;
-        padding: 8px 0px;
-        border-radius: 20px;
-        cursor: pointer;
-      }
-      .title {
-        text-align: center;
-        color: white;
-        background-color: black;
-        padding: 6px 0px;
-        margin-bottom: 20px;
-      }
-      ul {
-        padding: 0px;
-        margin: 24px 0px 0px 30px;
-        list-style-type: none;
+        padding: 8px 22px;
+        background-color: #e45f2b;
         font-size: 24px;
         color: white;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      .start:hover,
+      .stop:hover,
+      .lap:hover,
+      .reset:hover {
+        background-color: #f1662f;
+      }
+      span {
+        font-size: 16px;
+        text-align: center;
+        opacity: 0.8;
+      }
+      ul {
+        width: 80%;
+        margin: 60px auto;
+        list-style-type: none;
+        padding: 0px;
+        font-size: 24px;
         overflow: auto;
-        height: 200px;
+        height: 180px;
+      }
+      ul::-webkit-scrollbar {
+        width: 10px; /* ширина scrollbar */
+      }
+      ul::-webkit-scrollbar-track {
+        background: white; /* цвет дорожки */
+      }
+      ul::-webkit-scrollbar-thumb {
+        background-color: #323232; /* цвет плашки */
       }
       ul > li {
-        margin-bottom: 12px;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 20px;
+      }
+      @media screen and (max-width: 800px) {
+        .wrapper {
+          width: 100%;
+          margin-top: 20px;
+        }
+        .timer {
+          font-size: 62px;
+          width: 70%;
+        }
+        .btn {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
     </style>
   </head>
   <body>
     <div class="wrapper">
-      <div class="title">Женёк пидор</div>
+      <div class="title">Секундомер</div>
       <div class="timer">
-        <div class="hrs">00:</div>
-        <div class="min">00:</div>
-        <div class="sec">00</div>
+        <div class="minutes">00:</div>
+        <div class="seconds">00,</div>
+        <div class="miliseconds">00</div>
+        <span>Min</span>
+        <span>Sec</span>
+        <span>Msec</span>
       </div>
       <div class="btn">
         <div class="start">Старт</div>
@@ -95,30 +131,30 @@
       const lapS = document.querySelector(".lap");
       const startS = document.querySelector(".start");
       const stopS = document.querySelector(".stop");
-      const hrs = document.querySelector(".hrs");
-      const min = document.querySelector(".min");
-      const sec = document.querySelector(".sec");
+      const seconds = document.querySelector(".seconds");
+      const minutes = document.querySelector(".minutes");
+      const miliseconds = document.querySelector(".miliseconds");
 
-      let h = 0;
       let m = 0;
       let s = 0;
+      let ms = 0;
 
       function start() {
-        s++;
-        if (s >= 60) {
-          s = 0;
-          m++;
-          if (m >= 60) {
-            m = 0;
-            h++;
+        ms++;
+        if (ms >= 100) {
+          ms = 0;
+          s++;
+          if (s >= 60) {
+            s = 0;
+            m++;
           }
         }
       }
       function add() {
         start();
-        hrs.textContent = h > 9 ? h : "0" + h + ":";
-        min.textContent = m > 9 ? m : "0" + m + ":";
-        sec.textContent = s > 9 ? s : "0" + s;
+        minutes.textContent = m > 9 ? m + ":" : "0" + m + ":";
+        seconds.textContent = s > 9 ? s + "," : "0" + s + ",";
+        miliseconds.textContent = ms > 9 ? ms : "0" + ms;
         timer();
       }
 
@@ -126,8 +162,8 @@
         "click",
         () => {
           add();
-        }
-        // { once: true }
+        },
+        { once: true }
       );
       stopS.addEventListener(
         "click",
@@ -140,16 +176,19 @@
         lap();
       });
       function timer() {
-        t = setTimeout(add, 1000);
+        t = setTimeout(add, 10);
       }
       function timerStop() {
         clearTimeout(t);
       }
-
+      let count = 0;
       function lap() {
-        const li = document.createElement("li");
-        lapBlock.appendChild(li);
-        li.textContent = `${h}:${m}:${s}`;
+        if (ms > 1) {
+          const li = document.createElement("li");
+          lapBlock.appendChild(li);
+          count++;
+          li.textContent = `Круг ${count}:   ${m}:${s},${ms}`;
+        }
       }
     </script>
   </body>
